@@ -1,6 +1,6 @@
-FROM ubuntu:14.04
+FROM ubuntu:trusty
 
-MAINTAINER Yaroslav Admin <devoto13@gmail.com>
+MAINTAINER Frode Egeland <egeland@gmail.com>
 
 # Base
 ENV LANG en_US.UTF-8
@@ -9,11 +9,9 @@ ENV DEBIAN_FRONTEND noninteractive
 RUN locale-gen en_US en_US.UTF-8
 RUN dpkg-reconfigure locales
 RUN apt-get update
-
-RUN apt-get install -y python-software-properties
+RUN apt-get install -y python3-pip postgresql-server-dev-all postgresql-common supervisor
 
 # Supervisor
-RUN apt-get install supervisor -y
 RUN update-rc.d -f supervisor disable
 
 ADD supervisord.conf /etc/supervisor/conf.d/supervisord.conf
@@ -25,8 +23,7 @@ RUN chmod +x /usr/local/bin/startup
 CMD ["/usr/local/bin/startup"]
 
 # Install global dependencies
-RUN apt-get install -y python python-dev python-setuptools python-pip
-RUN pip install gunicorn setproctitle
+RUN pip3 install gunicorn setproctitle flask psycopg2 SQLAlchemy coverage nose Mako Flask-Script Flask-Migrate Flask-HTTPAuth Flask-SQLAlchemy
 
 # Install gunicorn running script
 ADD run /usr/local/bin/run
